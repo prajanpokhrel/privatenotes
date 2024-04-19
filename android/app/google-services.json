@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "166074631675",
+    "project_id": "privatesnotes-flutter-apps",
+    "storage_bucket": "privatesnotes-flutter-apps.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:166074631675:android:89741a16d63f69eb9df75e",
+        "android_client_info": {
+          "package_name": "com.example.privatenotes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2VIL3NLzNxDC10XvnVad2kEWLtoSOzf8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
