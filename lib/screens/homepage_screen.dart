@@ -5,6 +5,7 @@ import 'package:privatenotes/firebase_options.dart';
 import 'package:privatenotes/screens/emailverify_screen.dart';
 
 import 'package:privatenotes/screens/login_screen.dart';
+import 'package:privatenotes/screens/notes_screen.dart';
 
 class HomepageScreen extends StatelessWidget {
   const HomepageScreen({super.key});
@@ -19,16 +20,16 @@ class HomepageScreen extends StatelessWidget {
             case ConnectionState.done:
               final user = FirebaseAuth.instance.currentUser;
 
-              if (user! == null) {
+              // ignore: unnecessary_null_comparison
+              if (user != null) {
                 if (user.emailVerified) {
-                  print('email verified');
+                  return const NotesScreen();
                 } else {
                   return const EmailVerifyScreen();
                 }
               } else {
                 return const LoginScreen();
               }
-              return Text("done");
 
             default:
               return const Text("lodaing data ......");

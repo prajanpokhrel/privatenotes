@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -12,7 +12,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   late final TextEditingController _email;
   late final TextEditingController _password;
-
+  bool _obscureText = true;
   @override
   void initState() {
     _email = TextEditingController();
@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("login "),
+        title: const Text("login "),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 50,
             ),
             Padding(
-              padding: EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               child: TextField(
                 keyboardType: TextInputType.emailAddress,
                 obscureText: false,
@@ -54,21 +54,31 @@ class _LoginScreenState extends State<LoginScreen> {
                     hintText: "Email"),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Padding(
-              padding: EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               child: TextField(
                 enableSuggestions: false,
-                obscureText: true,
+                obscureText: _obscureText,
                 controller: _password,
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(20),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    },
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
                     ),
-                    hintText: "password"),
+                  ),
+                ),
               ),
             ),
             SizedBox(
@@ -89,17 +99,33 @@ class _LoginScreenState extends State<LoginScreen> {
                     final UserCredential = await FirebaseAuth.instance
                         .signInWithEmailAndPassword(
                             email: email, password: password);
-                    print(UserCredential);
+                    Navigator.of(context).pushNamed('/notes/');
+
+                    Flushbar(
+                      backgroundColor: Colors.white,
+                      messageColor: Color.fromARGB(255, 32, 218, 15),
+                      message: "You are login",
+                      duration: Duration(seconds: 2),
+                    ).show(context);
                   } on FirebaseAuthException catch (e) {
                     if (e.code == 'invalid-credential') {
-                      log("invalid credential");
+                      Flushbar(
+                        backgroundColor: Colors.white,
+                        messageColor: Colors.red,
+                        message: "Invalid Credentials",
+                        duration: Duration(seconds: 2),
+                      ).show(context);
                     } else {
-                      log("something is happened");
-                      log(e.code);
+                      Flushbar(
+                        backgroundColor: Colors.white,
+                        messageColor: Colors.red,
+                        message: "Some error occured",
+                        duration: Duration(seconds: 2),
+                      ).show(context);
                     }
                   }
                 },
-                child: Center(
+                child: const Center(
                   child: Text(
                     "Login",
                     style: TextStyle(color: Colors.white, fontSize: 20),
@@ -111,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () {
                 Navigator.of(context).pushNamed('/register/');
               },
-              child: Text("Not regiseter yet ? Register here"),
+              child: const Text("Not regiseter yet ? Register here"),
             ),
           ],
         ),

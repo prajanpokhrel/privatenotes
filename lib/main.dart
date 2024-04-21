@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:privatenotes/screens/homepage_screen.dart';
 import 'package:privatenotes/screens/login_screen.dart';
+import 'package:privatenotes/screens/notes_screen.dart';
 import 'package:privatenotes/screens/register.dart';
 
 void main() {
@@ -19,10 +20,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
       ),
+      debugShowCheckedModeBanner: false,
       home: HomepageScreen(),
       routes: {
-        '/login/': (context) => LoginScreen(),
-        '/register/': (context) => RegisterScreen(),
+        '/login/': (context) => const LoginScreen(),
+        '/register/': (context) => const RegisterScreen(),
+        '/notes/': (context) => const NotesScreen(),
       },
     );
   }

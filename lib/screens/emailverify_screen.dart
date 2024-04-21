@@ -8,17 +8,17 @@ class EmailVerifyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Email verify'),
+        title: const Text('Email verify'),
       ),
       body: Column(
         children: [
-          Text("please verify your email address"),
+          const Text("please verify your email address"),
           TextButton(
               onPressed: () async {
                 final user = FirebaseAuth.instance.currentUser;
                 await user?.sendEmailVerification();
               },
-              child: Text("send email verfication"))
+              child: const Text("send email verfication"))
         ],
       ),
     );
