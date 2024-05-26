@@ -30,9 +30,8 @@ class HomepageScreen extends StatelessWidget {
               } else {
                 return const LoginScreen();
               }
-
             default:
-              return const Text("lodaing data ......");
+              return const CircularProgressIndicator();
           }
         });
   }
