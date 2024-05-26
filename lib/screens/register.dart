@@ -1,6 +1,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:privatenotes/constant/routes.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -87,17 +88,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   final password = _password.text;
                   try {
                     // ignore: unused_local_variable
-                    final UserCredential = await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                            email: email, password: password);
-                    Navigator.of(context).pushNamed('/login/');
+                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                        email: email, password: password);
+                    final user = FirebaseAuth.instance.currentUser;
+                    await user?.sendEmailVerification();
+                    Navigator.of(context).pushNamed(verifyEmailRoute);
 
-                    Flushbar(
-                      backgroundColor: Colors.white,
-                      messageColor: Color.fromARGB(255, 54, 235, 9),
-                      message: "Your account is created",
-                      duration: Duration(seconds: 2),
-                    ).show(context);
+                    // Flushbar(
+                    //   backgroundColor: Colors.white,
+                    //   messageColor: Color.fromARGB(255, 54, 235, 9),
+                    //   message: "Your account is created",
+                    //   duration: Duration(seconds: 2),
+                    // ).show(context);
                   } on FirebaseAuthException catch (e) {
                     if (e.code == 'email-already-in-use') {
                       Flushbar(
@@ -121,6 +123,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         duration: Duration(seconds: 2),
                       ).show(context);
                     }
+                  } catch (e) {
+                    Flushbar(
+                      backgroundColor: Colors.white,
+                      messageColor: Colors.red,
+                      message: "Something went wrong",
+                      duration: Duration(seconds: 2),
+                    ).show(context);
                   }
                 },
                 child: Center(
@@ -133,7 +142,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pushNamed('/login/');
+                Navigator.of(context).pushNamed(loginRoute);
               },
               child: Text("Already Register ? login here"),
             ),

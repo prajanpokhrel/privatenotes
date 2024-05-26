@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:privatenotes/constant/routes.dart';
+import 'package:privatenotes/screens/emailverify_screen.dart';
 import 'package:privatenotes/screens/homepage_screen.dart';
 import 'package:privatenotes/screens/login_screen.dart';
 import 'package:privatenotes/screens/notes_screen.dart';
@@ -23,9 +25,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: HomepageScreen(),
       routes: {
-        '/login/': (context) => const LoginScreen(),
-        '/register/': (context) => const RegisterScreen(),
-        '/notes/': (context) => const NotesScreen(),
+        loginRoute: (context) => const LoginScreen(),
+        registerRoute: (context) => const RegisterScreen(),
+        noteRoute: (context) => const NotesScreen(),
+        verifyEmailRoute: (context) => const EmailVerifyScreen(),
       },
     );
   }

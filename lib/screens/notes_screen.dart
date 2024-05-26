@@ -2,6 +2,7 @@ import 'package:another_flushbar/flushbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:privatenotes/constant/routes.dart';
 import 'package:privatenotes/logout.dart';
 
 enum MenuAction { logout }
@@ -40,7 +41,7 @@ class _NotesScreenState extends State<NotesScreen> {
                   if (shouldLogout) {
                     await FirebaseAuth.instance.signOut();
                     Navigator.of(context)
-                        .pushNamedAndRemoveUntil("/login/", (_) => false);
+                        .pushNamedAndRemoveUntil(loginRoute, (_) => false);
                     Flushbar(
                       backgroundColor: Colors.white,
                       messageColor: Colors.red,

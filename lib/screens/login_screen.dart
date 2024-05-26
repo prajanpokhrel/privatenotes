@@ -1,6 +1,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:privatenotes/constant/routes.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -99,7 +100,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     final UserCredential = await FirebaseAuth.instance
                         .signInWithEmailAndPassword(
                             email: email, password: password);
-                    Navigator.of(context).pushNamed('/notes/');
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil(noteRoute, (route) => false);
 
                     Flushbar(
                       backgroundColor: Colors.white,
@@ -115,6 +117,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         message: "Invalid Credentials",
                         duration: Duration(seconds: 2),
                       ).show(context);
+                    } else if (e.code == 'wrong-password') {
+                      Flushbar(
+                        backgroundColor: Colors.white,
+                        messageColor: Colors.red,
+                        message: "Wrong Password",
+                        duration: Duration(seconds: 2),
+                      ).show(context);
                     } else {
                       Flushbar(
                         backgroundColor: Colors.white,
@@ -123,6 +132,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         duration: Duration(seconds: 2),
                       ).show(context);
                     }
+                  } catch (e) {
+                    Flushbar(
+                      backgroundColor: Colors.white,
+                      messageColor: Colors.red,
+                      message: "Something went wrong",
+                      duration: Duration(seconds: 2),
+                    ).show(context);
                   }
                 },
                 child: const Center(
@@ -135,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pushNamed('/register/');
+                Navigator.of(context).pushNamed(registerRoute);
               },
               child: const Text("Not regiseter yet ? Register here"),
             ),
@@ -145,3 +161,26 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+// Future<void> showErroDialog(
+//   BuildContext context,
+//   String text,
+// ){
+//   return showDialog(
+//     context: context,
+//     builder: (context) {
+//       return AlertDialog(
+//         title: const Text("Error"),
+//         content: Text(text),
+//         actions: [
+//           TextButton(
+//             onPressed: () {
+//               Navigator.of(context).pop();
+//             },
+//             child: const Text("ok"),
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }
