@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("login "),
+        title: const Text("Login "),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -100,15 +100,23 @@ class _LoginScreenState extends State<LoginScreen> {
                     final UserCredential = await FirebaseAuth.instance
                         .signInWithEmailAndPassword(
                             email: email, password: password);
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil(noteRoute, (route) => false);
+                    final user = FirebaseAuth.instance.currentUser;
+                    if (user?.emailVerified == false) {
+                      //user email  verified
+                      Navigator.of(context)
+                          .pushNamedAndRemoveUntil(noteRoute, (route) => false);
+                    } else {
+                      //user email not verified
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          verifyEmailRoute, (route) => false);
+                    }
 
-                    Flushbar(
-                      backgroundColor: Colors.white,
-                      messageColor: Color.fromARGB(255, 32, 218, 15),
-                      message: "You are login",
-                      duration: Duration(seconds: 2),
-                    ).show(context);
+                    // Flushbar(
+                    //   backgroundColor: Colors.white,
+                    //   messageColor: Color.fromARGB(255, 32, 218, 15),
+                    //   message: "You are login",
+                    //   duration: Duration(seconds: 2),
+                    // ).show(context);
                   } on FirebaseAuthException catch (e) {
                     if (e.code == 'invalid-credential') {
                       Flushbar(
