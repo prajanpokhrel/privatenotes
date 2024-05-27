@@ -97,6 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   final email = _email.text;
                   final password = _password.text;
                   try {
+                    // ignore: unused_local_variable
                     final UserCredential = await FirebaseAuth.instance
                         .signInWithEmailAndPassword(
                             email: email, password: password);
