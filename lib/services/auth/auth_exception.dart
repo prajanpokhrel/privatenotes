@@ -1,7 +1,9 @@
 // Defining auth exception
 // exception class
 
+class AuthException implements Exception {}
 //login exceptionauth
+
 class UserNotFoundAuthException implements Exception {}
 
 class WrongPasswordAuthException implements Exception {}

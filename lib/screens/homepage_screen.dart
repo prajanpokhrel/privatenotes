@@ -1,13 +1,10 @@
-import 'dart:developer';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:privatenotes/firebase_options.dart';
+
 import 'package:privatenotes/screens/emailverify_screen.dart';
 
 import 'package:privatenotes/screens/login_screen.dart';
 import 'package:privatenotes/screens/notes_screen.dart';
+import 'package:privatenotes/services/auth/auth_services.dart';
 
 class HomepageScreen extends StatelessWidget {
   const HomepageScreen({super.key});
@@ -15,16 +12,15 @@ class HomepageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform),
+        future: AuthServices.firebase().initialize(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-              final user = FirebaseAuth.instance.currentUser;
+              final user = AuthServices.firebase().currentUser;
               // log(user.toString());
               // ignore: unnecessary_null_comparison
               if (user != null) {
-                if (user.emailVerified) {
+                if (user.isEmailVerified) {
                   return const NotesScreen();
                 } else {
                   return const EmailVerifyScreen();

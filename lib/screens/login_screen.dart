@@ -1,7 +1,9 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:privatenotes/constant/routes.dart';
+import 'package:privatenotes/services/auth/auth_exception.dart';
+import 'package:privatenotes/services/auth/auth_services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -98,11 +100,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   final password = _password.text;
                   try {
                     // ignore: unused_local_variable
-                    final UserCredential = await FirebaseAuth.instance
-                        .signInWithEmailAndPassword(
-                            email: email, password: password);
-                    final user = FirebaseAuth.instance.currentUser;
-                    if (user?.emailVerified == false) {
+                    await AuthServices.firebase()
+                        .logIn(email: email, password: password);
+                    final user = AuthServices.firebase().currentUser;
+                    if (user?.isEmailVerified ?? false) {
                       //user email  verified
                       Navigator.of(context)
                           .pushNamedAndRemoveUntil(noteRoute, (route) => false);
@@ -111,41 +112,31 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.of(context).pushNamedAndRemoveUntil(
                           verifyEmailRoute, (route) => false);
                     }
-
                     // Flushbar(
                     //   backgroundColor: Colors.white,
                     //   messageColor: Color.fromARGB(255, 32, 218, 15),
                     //   message: "You are login",
                     //   duration: Duration(seconds: 2),
                     // ).show(context);
-                  } on FirebaseAuthException catch (e) {
-                    if (e.code == 'invalid-credential') {
-                      Flushbar(
-                        backgroundColor: Colors.white,
-                        messageColor: Colors.red,
-                        message: "Invalid Credentials",
-                        duration: Duration(seconds: 2),
-                      ).show(context);
-                    } else if (e.code == 'wrong-password') {
-                      Flushbar(
-                        backgroundColor: Colors.white,
-                        messageColor: Colors.red,
-                        message: "Wrong Password",
-                        duration: Duration(seconds: 2),
-                      ).show(context);
-                    } else {
-                      Flushbar(
-                        backgroundColor: Colors.white,
-                        messageColor: Colors.red,
-                        message: "Some error occured",
-                        duration: Duration(seconds: 2),
-                      ).show(context);
-                    }
-                  } catch (e) {
+                  } on UserNotFoundAuthException {
                     Flushbar(
                       backgroundColor: Colors.white,
                       messageColor: Colors.red,
-                      message: "Something went wrong",
+                      message: "User not found",
+                      duration: Duration(seconds: 2),
+                    ).show(context);
+                  } on WrongPasswordAuthException {
+                    Flushbar(
+                      backgroundColor: Colors.white,
+                      messageColor: Colors.red,
+                      message: "Wrong Password",
+                      duration: Duration(seconds: 2),
+                    ).show(context);
+                  } on GenericAuthException {
+                    Flushbar(
+                      backgroundColor: Colors.white,
+                      messageColor: Colors.red,
+                      message: "Some error occured",
                       duration: Duration(seconds: 2),
                     ).show(context);
                   }

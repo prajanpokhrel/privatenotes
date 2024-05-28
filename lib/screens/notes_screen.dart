@@ -1,11 +1,11 @@
 import 'package:another_flushbar/flushbar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:privatenotes/constant/routes.dart';
+import 'package:privatenotes/enums/menu_action.dart';
 import 'package:privatenotes/logout.dart';
-
-enum MenuAction { logout }
+import 'package:privatenotes/services/auth/auth_services.dart';
 
 class NotesScreen extends StatefulWidget {
   const NotesScreen({super.key});
@@ -39,7 +39,7 @@ class _NotesScreenState extends State<NotesScreen> {
                   final shouldLogout = await showLogOutDialog(context);
 
                   if (shouldLogout) {
-                    await FirebaseAuth.instance.signOut();
+                    await AuthServices.firebase().logOut();
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil(loginRoute, (_) => false);
                     Flushbar(

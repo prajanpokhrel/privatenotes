@@ -1,7 +1,9 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:privatenotes/constant/routes.dart';
+import 'package:privatenotes/services/auth/auth_exception.dart';
+import 'package:privatenotes/services/auth/auth_services.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -13,6 +15,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   late final TextEditingController _email;
   late final TextEditingController _password;
+  bool _obscureText = true;
 
   @override
   void initState() {
@@ -59,17 +62,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
               height: 20,
             ),
             Padding(
-              padding: EdgeInsets.only(left: 20, right: 20),
+              padding: const EdgeInsets.only(left: 20, right: 20),
               child: TextField(
                 enableSuggestions: false,
-                obscureText: true,
+                obscureText: _obscureText,
                 controller: _password,
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(20),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    },
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
                     ),
-                    hintText: "password"),
+                  ),
+                ),
               ),
             ),
             SizedBox(
@@ -88,9 +101,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   final password = _password.text;
                   try {
                     // ignore: unused_local_variable
-                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                        email: email, password: password);
-                    final user = FirebaseAuth.instance.currentUser;
+                    await AuthServices.firebase()
+                        .createUser(email: email, password: password);
+                    final user = AuthServices.firebase().currentUser;
                     await user?.sendEmailVerification();
                     Navigator.of(context).pushNamed(verifyEmailRoute);
 
@@ -100,30 +113,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     //   message: "Your account is created",
                     //   duration: Duration(seconds: 2),
                     // ).show(context);
-                  } on FirebaseAuthException catch (e) {
-                    if (e.code == 'email-already-in-use') {
-                      Flushbar(
-                        backgroundColor: Colors.white,
-                        messageColor: Colors.red,
-                        message: "Email already in use try another",
-                        duration: Duration(seconds: 2),
-                      ).show(context);
-                    } else if (e.code == 'weak-password') {
-                      Flushbar(
-                        backgroundColor: Colors.white,
-                        messageColor: Colors.red,
-                        message: "Weak password please keep strong password",
-                        duration: Duration(seconds: 2),
-                      ).show(context);
-                    } else if (e.code == 'invalid-email') {
-                      Flushbar(
-                        backgroundColor: Colors.white,
-                        messageColor: Colors.red,
-                        message: "Invalid email please use @",
-                        duration: Duration(seconds: 2),
-                      ).show(context);
-                    }
-                  } catch (e) {
+                  } on EmailAlreadyInUseAuthException {
+                    Flushbar(
+                      backgroundColor: Colors.white,
+                      messageColor: Colors.red,
+                      message: "Email already in use try another",
+                      duration: Duration(seconds: 2),
+                    ).show(context);
+                  } on WeakPasswordAuthException {
+                    Flushbar(
+                      backgroundColor: Colors.white,
+                      messageColor: Colors.red,
+                      message: "Email already in use try another",
+                      duration: Duration(seconds: 2),
+                    ).show(context);
+                  } on InvalidEmailAuthException {
+                    Flushbar(
+                      backgroundColor: Colors.white,
+                      messageColor: Colors.red,
+                      message: "Invalid email please use @",
+                      duration: Duration(seconds: 2),
+                    ).show(context);
+                  } on GenericAuthException {
                     Flushbar(
                       backgroundColor: Colors.white,
                       messageColor: Colors.red,

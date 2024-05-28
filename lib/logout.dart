@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-enum MenuAction { logout }
-
 class Logout extends StatefulWidget {
   const Logout({super.key});
 
